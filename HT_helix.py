@@ -61,13 +61,29 @@ def HoughTransform_phi(Rsquared, Xp, Yp, numpoints, binx, biny, myrange):
         ht_phi.extend(phis)
         ht_rho.extend(rhos)
 
+    H, xedges, yedges = np.histogram2d(ht_phi, ht_rho, bins = (binx, biny))
+    am = H.argmax()
+    r_idx = am % H.shape[1]
+    c_idx = am // H.shape[1]
+
+    print("x index = ", xedges[c_idx])
+    print("y index = ", yedges[r_idx])
+
+    R_ = yedges[r_idx]
+    theta_ = xedges[c_idx]
+
+    print("rho: ", R_)
+    print("phi: ", theta_, ", ", theta_ * 180 /np.pi, " deg")
+
     print("Max R = ", max(ht_rho))
     fig_HT_phi = plt.figure()
     plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
-    plt.xlabel('phi')
-    plt.ylabel('Rho')
+    plt.xlabel(r'$\phi$')
+    plt.ylabel(r'$\rho$')
     plt.tight_layout()
-    plt.savefig('helix_hough.pdf')
+    plt.savefig('plots/helix_hough.pdf')
+
+    return R_, theta_
 
 
 def D_theta(x1, y1, x2, y2, numpoints):
@@ -85,12 +101,13 @@ def HT_D_theta(Xp, Yp, numpoints, binx, biny, myrange):
         ht_thetas.extend(t)
         ht_D.extend(d)
 
+
     fig_HT = plt.figure()
     plt.hist2d(ht_thetas, ht_D, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
     plt.xlabel('theta')
     plt.ylabel('D')
     plt.tight_layout()
-    plt.savefig('helix_hough.pdf')
+    #plt.savefig('plots/helix_hough.pdf')
     return ht_thetas, ht_D
 
 
