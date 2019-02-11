@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy import stats
 matplotlib.get_configdir()
 print(plt.style.available)
-plt.style.use('presentation')
+plt.style.use('seaborn-poster')
 from mpl_toolkits.mplot3d import Axes3D
 %matplotlib inline
 
