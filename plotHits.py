@@ -69,35 +69,37 @@ plt.ylabel("Entries")
 plt.tight_layout()
 
 
-## MM to Meter
-MMtoMeter(g4hits, ["x", "y", "z"])
-MMtoMeter(dataset, ["MCx", "MCy", "MCz"])
-MMtoMeter(hits, ["MCx", "MCy", "MCz"])
+# ## MM to Meter
+# MMtoMeter(g4hits, ["x", "y", "z"])
+# MMtoMeter(dataset, ["MCx", "MCy", "MCz"])
+# MMtoMeter(hits, ["MCx", "MCy", "MCz"])
 
-# Plot the raw hits
-figHits = plt.figure()
-ax = Axes3D(figHits)
-# ax.scatter(g4hits['x'], g4hits['z'], g4hits['y'], c = 'blue', marker='x', label="G4 steps")
-ax.scatter(dataset['MCx'], dataset['MCz'], dataset['MCy'], c = 'red', marker = 'o', label="MC Truth")
-ax.scatter(hits['MCx'], hits['MCz'], hits['MCy'], c = 'green', marker = '*', label="Reco Hit")
-plt.legend(loc='upper left')
-ax.set_xlabel("x")
-ax.set_ylabel("z")
-ax.set_ylabel("y")
-plt.tight_layout()
-ax.xaxis.labelpad = 20
-ax.yaxis.labelpad = 20
-ax.zaxis.labelpad = 20
+# # Plot the raw hits
+# figHits = plt.figure()
+# ax = Axes3D(figHits)
+# # ax.scatter(g4hits['x'], g4hits['z'], g4hits['y'], c = 'blue', marker='x', label="G4 steps")
+# ax.scatter(dataset['MCx'], dataset['MCz'], dataset['MCy'], c = 'red', marker = 'o', label="MC Truth")
+# ax.scatter(hits['MCx'], hits['MCz'], hits['MCy'], c = 'green', marker = '*', label="Reco Hit")
+# plt.legend(loc='upper left')
+# ax.set_xlabel("x")
+# ax.set_ylabel("z")
+# ax.set_ylabel("y")
+# plt.tight_layout()
+# ax.xaxis.labelpad = 20
+# ax.yaxis.labelpad = 20
+# ax.zaxis.labelpad = 20
 
 
 fig_xy = plt.figure()
-plt.scatter(g4hits['x'], g4hits['y'], c = 'blue', marker='x', label="G4 steps")
+# plt.scatter(g4hits['x'], g4hits['y'], c = 'blue', marker='x', label="G4 steps")
 plt.scatter(dataset['MCx'], dataset['MCy'], c = 'red', marker = '+', label="MC Truth")
 plt.scatter(hits['MCx'], hits['MCy'], c = 'green', marker = '*', label="Reco Hit")
 plt.legend(loc='upper left')
-plt.xlabel('x')
-plt.ylabel('y')
+plt.xlabel('x [mm]')
+plt.ylabel('y [mm]')
 plt.tight_layout()
+
+plt.savefig('plots/2400MeV_hits_xy.pdf')
 
 fig_xz = plt.figure()
 plt.scatter(g4hits['x'], g4hits['z'], c = 'blue', marker='x', label="G4 steps")
@@ -119,8 +121,13 @@ plt.tight_layout()
 
 plt.show()
 
-DoFullHT(dataset['MCx'], dataset['MCy'], mrange=[[1.4, 1.8], [-0, 0.2]],
-         numpoints=100, binx=10, biny = 10)
+print("before DoFullHT")
+
+DoFullHT(hits['MCx'], hits['MCy'], mrange=[[0, np.pi], [-0.0005, 0.0005]],
+         numpoints=500, binx=200, biny = 200, rangeConf=[(0.0002, 0.003), (0.00011, 0.00013)], plotName = "2400MeV")
+
+
+
 # Conformal Transform
 # XY_p = [conformalTransform(hits['MCx'][i], hits['MCy'][i])
 #         for i in range(0, hits.shape[0]) if
