@@ -31,7 +31,7 @@ def rho(rhit_squared, xp, yp, phi):
     return r
 
 def rho_phi(rhit_squared, xp, yp, numpoints):
-    phis = np.linspace(0, np.pi, numpoints)
+    phis = np.linspace(0, 2*np.pi, numpoints)
     rhos = [rho(rhit_squared, xp, yp, phi) for phi in phis]
     return phis, rhos
 
@@ -49,32 +49,38 @@ def HoughTransform_phi(Rsquared, Xp, Yp, numpoints, binx, biny, myrange, plotNam
     r_idx = am % H.shape[1]
     c_idx = am // H.shape[1]
 
-    print("x index = ", xedges[c_idx])
-    print("y index = ", yedges[r_idx])
+    # print("x index = ", xedges[c_idx])
+    # print("y index = ", yedges[r_idx])
 
     R_ = yedges[r_idx]
     theta_ = xedges[c_idx]
 
-    print("rho: ", R_)
-    print("phi: ", theta_, ", ", theta_ * 180 /np.pi, " deg")
+    # print("rho: ", R_)
+    # print("phi: ", theta_, ", ", theta_ * 180 /np.pi, " deg")
 
-    print("Max R = ", max(ht_rho))
+    # print("Max R = ", max(ht_rho))
     fig_HT_phi = plt.figure()
     h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
     plt.colorbar(h[3])
     plt.xlabel(r'$\phi$')
     plt.ylabel(r'$\rho$')
     plt.tight_layout()
-    plt.savefig('plots/'+plotName+'HT.pdf')
     # plt.show()
+    # plt.savefig('plots/'+plotName+'HT.pdf')
+
 
     return R_, theta_
 
 
 def DoFullHT(X, Y, mrange, rangeConf, numpoints=500, binx=200, biny = 200, plotName=""):
-    print("DoFullHT")
-    XY_p = [conformalTransform(X[i], Y[i]) for i in range(0, len(X)) if
-            conformalTransform(X[i], Y[i])[2]]
+    # print("DoFullHT")
+
+    # XY_p = [conformalTransform(X[i], Y[i]) for i in range(0, len(X)) if
+    #         conformalTransform(X[i], Y[i])[2]]
+
+    XY_p = [conformalTransform(x, y) for (x, y) in zip(X, Y) if
+            conformalTransform(x, y)[2]]
+
     Xp, Yp, rhit_squared = zip(*XY_p)
     fig_conformalTransform = plt.figure()
     plt.scatter(Xp, Yp, c = 'DarkBlue', linestyle='-')
@@ -82,14 +88,13 @@ def DoFullHT(X, Y, mrange, rangeConf, numpoints=500, binx=200, biny = 200, plotN
     plt.legend(loc='upper left')
     plt.xlabel("u")
     plt.ylabel("v")
-    print("rangeCOnf: ", rangeConf[0])
+    # print("rangeCOnf: ", rangeConf[0])
     plt.xlim(rangeConf[0])
     plt.ylim(rangeConf[1])
     plt.tight_layout()
-    plt.savefig('plots/'+plotName+'Conformal.pdf')
     # plt.show()
+    # plt.savefig('plots/'+plotName+'Conformal.pdf')
 
-    print("DoFullHT: histo")
     R_, theta_ = HoughTransform_phi(Rsquared=rhit_squared, Xp=Xp, Yp=Yp,
                                     numpoints=numpoints,
                                     binx=binx, biny=biny, myrange=mrange, plotName = plotName)
@@ -97,9 +102,11 @@ def DoFullHT(X, Y, mrange, rangeConf, numpoints=500, binx=200, biny = 200, plotN
     a_calc = np.cos(theta_)/(2*R_)
     b_calc = np.sin(theta_)/(2*R_)
 
-    print("a =", a_calc)
-    print("b =", b_calc)
-    print("radius=", radius_calc)
+    # print("a =", a_calc)
+    # print("b =", b_calc)
+    # print("radius=", radius_calc)
+
+    return radius_calc, a_calc, b_calc, theta_
 
 # # ====== Example with a circle ====== #
 # radius = 20
