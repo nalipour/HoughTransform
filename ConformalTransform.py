@@ -7,6 +7,7 @@ matplotlib.get_configdir()
 print(plt.style.available)
 plt.style.use('seaborn-poster')
 from mpl_toolkits.mplot3d import Axes3D
+from sklearn.cluster import AffinityPropagation
 # %matplotlib inline
 
 
@@ -49,6 +50,22 @@ def HoughTransform_phi(Rsquared, Xp, Yp, numpoints, binx, biny, myrange, plotNam
     r_idx = am % H.shape[1]
     c_idx = am // H.shape[1]
 
+    trackpos = np.argwhere(H>112)
+
+    print("Above threshold: ", trackpos.shape)
+    print(H[trackpos[0][1]][trackpos[0][1]])
+    print(trackpos[0][0])
+    print(trackpos)
+
+    clustering = AffinityPropagation().fit(trackpos)
+    print("labels: ", clustering.labels_)
+    print("centers: ", clustering.cluster_centers_)
+    # -------------------- #
+    # kmeans = KMeans(n_clusters=1, random_state=0).fit(trackpos)
+    # print("Labels: ", kmeans.labels_)
+    # print("Cluster centers: ", kmeans.cluster_centers_)
+    # -------------------- #
+    # H[trackpos[0]])
     # print("x index = ", xedges[c_idx])
     # print("y index = ", yedges[r_idx])
 
@@ -65,7 +82,7 @@ def HoughTransform_phi(Rsquared, Xp, Yp, numpoints, binx, biny, myrange, plotNam
     plt.xlabel(r'$\phi$')
     plt.ylabel(r'$\rho$')
     plt.tight_layout()
-    # plt.show()
+    plt.show()
     # plt.savefig('plots/'+plotName+'HT.pdf')
 
 
@@ -107,61 +124,3 @@ def DoFullHT(X, Y, mrange, rangeConf, numpoints=500, binx=200, biny = 200, plotN
     # print("radius=", radius_calc)
 
     return radius_calc, a_calc, b_calc, theta_
-
-# # ====== Example with a circle ====== #
-# radius = 20
-# _a = 5
-# _b = np.sqrt(radius**2-_a**2)
-# print(_b)
-#
-# radius2 = 40
-# _a2 = 5
-# _b2 = np.sqrt(radius2**2-_a2**2)
-#
-# X1, Y1 = produceCircle(a = _a, b = _b, R = radius, n = 20, T = 1 * np.pi)
-# print("1: len: ", len(X1))
-# X2, Y2 = produceCircle(a = _a2, b = _b2, R = radius2, n = 20, T = 1 * np.pi)
-# X = X1
-# Y = Y1
-# X.extend(X2)
-# Y.extend(Y2)
-#
-# print("2: len: ", len(X2))
-#
-# figCirc= plt.figure()
-# plt.scatter(X1[:len(X2)], Y1[:len(X2)], c = 'DarkBlue', linestyle='-', label='Track1')
-# plt.scatter(X2, Y2, c = 'red', linestyle='-', label='Track2')
-# plt.legend(loc='upper left');
-# plt.xlabel("X")
-# plt.ylabel("Y")
-# plt.tight_layout()
-# plt.savefig('plots/tracksXY.pdf')
-#
-#
-# XY_p = [conformalTransform(X[i], Y[i]) for i in range(0, len(X)) if
-#         conformalTransform(X[i], Y[i])[2]]
-# Xp, Yp, rhit_squared = zip(*XY_p)
-# fig_conformalTransform = plt.figure()
-# plt.scatter(Xp[:len(X2)], Yp[:len(X2)], c = 'DarkBlue', linestyle='-', label='Track1')
-# plt.scatter(Xp[len(X2):], Yp[len(X2):], c = 'red', linestyle='-', label='Track2')
-# plt.title("Conformal transform")
-# plt.legend(loc='upper left')
-# plt.xlabel("u")
-# plt.ylabel("v")
-# plt.tight_layout()
-# plt.savefig('plots/tracksConformalTransform.pdf')
-#
-#
-# R_, theta_ = HoughTransform_phi(Rsquared=rhit_squared, Xp=Xp, Yp=Yp,
-#                                 numpoints=500,
-#                                 binx=200, biny = 200, myrange=[[-0*np.pi, np.pi], [0, 0.1]])
-#
-# # print (rhit_squared)
-# # print(1/(radius))
-# radius_calc = 1./(2*R_)
-# a_calc = np.cos(theta_)/(2*R_)
-# b_calc = np.sin(theta_)/(2*R_)
-#
-# print("a =", a_calc)
-# print("b =", b_calc)
-# print("radius=", radius_calc)
