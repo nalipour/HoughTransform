@@ -1,22 +1,29 @@
 import Hits
 import Transforms
 import numpy as np
-# %matplotlib inline
+%matplotlib inline
 
 energy = "100k"
 
 DATA_PATH = './data/pgun/'
 filename = "reco_"+energy+"MeV_theta90.csv"
 
+BCG_PATH = './data/'
+Filename_background = "reco_0.csv"
+
 
 h = Hits.Hits(DATA_PATH, filename)
+h_background = Hits.Hits(BCG_PATH, Filename_background)
 # h.drawAllEvents()
 
-ev = Hits.Event(h, 10)
+ev = Hits.Event(h, 1)
+# Combine events (background)
+# ev.combineEvents([Hits.Event(h, 0), Hits.Event(h, 2), Hits.Event(h_background)])
+
 # print(ev._event)
 # ev.data = 12
 # ev._event
-# ev.drawEvent3D()
+ev.drawEvent3D()
 # ev.drawEventXY()
 # ev.drawEventXZ()
 # ev.drawEventYZ()

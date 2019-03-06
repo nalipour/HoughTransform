@@ -22,8 +22,11 @@ class Hits:
         return pd.read_csv(csv_path)
 
 
-    def returnEvent(self, event):
-        return self._data.loc[self._data['trackNum'] == event]
+    def returnEvent(self, event=0):
+        if 'trackNum' in self._data:
+            return self._data.loc[self._data['trackNum'] == event]
+        else:
+            return self._data
 
 
     def drawAllEvents(self):
@@ -43,12 +46,13 @@ class Hits:
 
 # Looking into each event
 class Event:
-    def __init__(self, hits, event):
+    def __init__(self, hits, event=0):
         self._hits = hits
         self._data = hits.returnEvent(event)
-        self._MCx = self._data["MCx"]
-        self._MCy = self._data["MCy"]
-        self._MCz = self._data["MCz"]
+        self.update()
+        # self._MCx = self._data["MCx"]
+        # self._MCy = self._data["MCy"]
+        # self._MCz = self._data["MCz"]
         self._event = event
 
 
@@ -56,13 +60,18 @@ class Event:
     def data(self):
         return self._MCx, self._MCy, self._MCz
 
+    @property
+    def data_df(self):
+        return self._data
+
     @data.setter
     def data(self, event):
         self._event = event
         self._data = self._hits.returnEvent(event)
-        self._MCx = self._data["MCx"]
-        self._MCy = self._data["MCy"]
-        self._MCz = self._data["MCz"]
+        self.update()
+        # self._MCx = self._data["MCx"]
+        # self._MCy = self._data["MCy"]
+        # self._MCz = self._data["MCz"]
 
 
     def drawEvent3D(self):
@@ -105,3 +114,12 @@ class Event:
         plt.ylabel('z [mm]')
         plt.tight_layout()
         plt.show()
+
+    def update(self):
+        self._MCx = self._data["MCx"]
+        self._MCy = self._data["MCy"]
+        self._MCz = self._data["MCz"]
+
+    def combineEvents(self, events):
+        self._data = pd.concat([self._data]+[e.data_df for e in events], ignore_index=True)
+        self.update()
