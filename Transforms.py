@@ -33,7 +33,7 @@ class Transforms:
         return r
 
     def rho_phi(self, rhit_squared, xp, yp, numpoints):
-        phis = np.linspace(0, 2*np.pi, numpoints)
+        phis = np.linspace(0, np.pi, numpoints)
         rhos = [self.rho(rhit_squared, xp, yp, phi) for phi in phis]
         return phis, rhos
 
@@ -60,8 +60,8 @@ class Transforms:
         max_x, max_y = self.getCoords(trackpos, xedges, yedges, bx, by)
 
         fig_HT_phi = plt.figure()
-        h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
-        plt.scatter(max_x, max_y, c = 'red', marker = '+')
+        h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet)#, range=myrange)
+        plt.scatter(max_x, max_y, c = 'black', marker = '+')
         plt.colorbar(h[3])
         plt.xlabel(r'$\phi$ [rad]', fontsize=FONTSIZE)
         plt.ylabel(r'$\rho$ [1/mm]', fontsize=FONTSIZE)
