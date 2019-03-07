@@ -74,19 +74,23 @@ class Event:
         # self._MCz = self._data["MCz"]
 
 
-    def drawEvent3D(self):
+    def drawEvent3D(self, plotName=""):
         figHits = plt.figure()
         ax = Axes3D(figHits)
         ax.scatter(self._MCx, self._MCz, self._MCy, c = 'blue', marker = 'o', label="MC Truth")
         plt.legend(loc='upper left')
-        ax.set_xlabel("x")
-        ax.set_ylabel("z")
-        ax.set_ylabel("y")
+        ax.set_xlabel("x [mm]")
+        ax.set_ylabel("z [mm]")
+        ax.set_ylabel("y [mm]")
         plt.tight_layout()
         ax.xaxis.labelpad = 20
         ax.yaxis.labelpad = 20
         ax.zaxis.labelpad = 20
-        plt.show()
+
+        if plotName:
+            plt.savefig(plotName)
+        else:
+            plt.show()
 
     def drawEventXY(self):
         fig_xy = plt.figure()
