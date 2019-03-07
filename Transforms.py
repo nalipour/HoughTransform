@@ -93,7 +93,7 @@ class Transforms:
 
         # bandwidth = estimate_bandwidth(trackpos, quantile=0.3)
         # clustering = MeanShift(bandwidth=bandwidth, bin_seeding=True)
-        clustering = DBSCAN(eps=1, min_samples=2).fit(trackpos)
+        clustering = DBSCAN(eps=np.sqrt(2), min_samples=4).fit(trackpos)
         clustering.fit(trackpos)
         labels = clustering.labels_
         # clu_center = clustering.cluster_centers_
