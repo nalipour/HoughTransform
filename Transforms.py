@@ -3,8 +3,11 @@ from numpy import unravel_index
 from sklearn.cluster import DBSCAN
 import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.get_configdir()
 plt.style.use('seaborn-poster')
 from mpl_toolkits.mplot3d import Axes3D
+
+FONTSIZE = 50
 
 class Transforms:
 
@@ -35,7 +38,7 @@ class Transforms:
         return phis, rhos
 
     def HoughTransform_phi(self, numpoints, binx, biny, myrange, plotName=""):
-        # myrange=[[0, np.pi], [min(ht_rho), max(ht_rho)]]
+
         ht_phi = []
         ht_rho = []
         for i in range(0, len(self._Xp)):
@@ -44,21 +47,31 @@ class Transforms:
             ht_rho.extend(rhos)
 
         H, xedges, yedges = np.histogram2d(ht_phi, ht_rho, bins = (binx, biny))
+        print("xedge: ", xedges.shape)
+        print("yedge: ", yedges.shape)
 
         print("min rho: ", min(ht_rho))
         print("max rho: ", max(ht_rho))
+
+        myrange=[[0, np.pi], [min(ht_rho), max(ht_rho)]]
+        bx = (myrange[0][1]-myrange[0][0])/binx
+        by = (myrange[1][1]-myrange[1][0])/biny
+        trackpos=self.cluster_test(H)
+        max_x, max_y = self.getCoords(trackpos, xedges, yedges, bx, by)
+
         fig_HT_phi = plt.figure()
         h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
+        plt.scatter(max_x, max_y, c = 'red', marker = '+')
         plt.colorbar(h[3])
-        plt.xlabel(r'$\phi$ [rad]')
-        plt.ylabel(r'$\rho$ [1/mm]')
+        plt.xlabel(r'$\phi$ [rad]', fontsize=FONTSIZE)
+        plt.ylabel(r'$\rho$ [1/mm]', fontsize=FONTSIZE)
         plt.tight_layout()
         if plotName:
             plt.savefig(plotName)
         else:
             plt.show()
 
-        return H
+        return H, xedges, yedges
 
 
     def cluster_test(self, H):
@@ -89,6 +102,40 @@ class Transforms:
         n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
         print ("num clusters: ", n_clusters)
         print("H at centers:", [H[pos[0]][pos[1]] for pos in trackpos])
+        return trackpos
+
+    def getCoords(self, trackpos, x, y, bx, by):
+        xp = [x[a[0]]+bx/2.0 for a in trackpos]
+        yp = [y[a[1]]+by/2.0 for a in trackpos]
+
+        # xp = [x[a[0]] for a in trackpos[0]]
+        # yp = [y[a[1]] for a in trackpos[0]]
+        # xp = []
+        # yp = []
+        # xp.append(x[trackpos[0][0]]+bx/2.0)
+        # # xp.append(x[trackpos[0][0]+1])
+        # yp.append(y[trackpos[0][1]]+by/2.0)
+        # # yp.append(y[trackpos[0][1]+1])
+
+        # xp = [1.37]
+        # yp = [-0.00026]
+        return xp, yp
+
+    def plotConformalTransform(self, plotName=""):
+        fig_conformalTransform = plt.figure()
+        plt.scatter(self._Xp, self._Yp)#, c = 'DarkBlue', linestyle='-')
+        # plt.title("Conformal transform")
+        plt.legend(loc='upper left')
+        plt.xlabel("u", fontsize=FONTSIZE)
+        plt.ylabel("v", fontsize=FONTSIZE)
+        # print("rangeCOnf: ", rangeConf[0])
+        plt.xlim([min(self._Xp), max(self._Xp)])
+        plt.ylim([min(self._Yp), max(self._Yp)])
+        plt.tight_layout()
+        if plotName:
+            plt.savefig(plotName)
+        else:
+            plt.show()
 
 
         # def DoFullHT(self, mrange, rangeConf, numpoints=500, binx=200, biny = 200, plotName=""):

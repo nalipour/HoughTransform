@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.get_configdir()
 plt.style.use('seaborn-poster')
 from mpl_toolkits.mplot3d import Axes3D
 
@@ -34,9 +35,9 @@ class Hits:
         ax = Axes3D(figHits)
         ax.scatter(self._MCx, self._MCz, self._MCy, c = 'blue', marker = 'o', label="MC Truth")
         plt.legend(loc='upper left')
-        ax.set_xlabel("x")
-        ax.set_ylabel("z")
-        ax.set_ylabel("y")
+        ax.set_xlabel("x", fontsize=FONTSIZE)
+        ax.set_ylabel("z", fontsize=FONTSIZE)
+        ax.set_ylabel("y", fontsize=FONTSIZE)
         plt.tight_layout()
         ax.xaxis.labelpad = 20
         ax.yaxis.labelpad = 20
