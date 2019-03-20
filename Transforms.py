@@ -56,12 +56,19 @@ class Transforms:
         myrange=[[0, np.pi], [min(ht_rho), max(ht_rho)]]
         bx = (myrange[0][1]-myrange[0][0])/binx
         by = (myrange[1][1]-myrange[1][0])/biny
-        trackpos=self.cluster_test(H)
+        trackpos, labels = self.cluster_test(H)
+        unique_labels = set(labels)
         max_x, max_y = self.getCoords(trackpos, xedges, yedges, bx, by)
 
         fig_HT_phi = plt.figure()
         h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet)#, range=myrange)
-        plt.scatter(max_x, max_y, c = 'black', marker = '+')
+        plt.scatter(max_x, max_y, s=120, facecolors='none', edgecolors='w')
+        plt.scatter(max_x, max_y, marker = 'x',
+                    c=[matplotlib.cm.nipy_spectral((float(i)+1)/len(unique_labels)) for i in labels])
+
+        for i in range(0, len(labels)):
+            print("label: ", labels[i], "color: ", (float(labels[i])+1)/len(unique_labels), ", x: ", max_x[i], ", y: ", max_y[i])
+
         plt.colorbar(h[3])
         plt.xlabel(r'$\phi$ [rad]', fontsize=FONTSIZE)
         plt.ylabel(r'$\rho$ [1/mm]', fontsize=FONTSIZE)
@@ -85,40 +92,31 @@ class Transforms:
         # print("Ultimate max: ", r_idx, ", ", c_idx)
         print("Ultimate max: ", unravel_index(am, H.shape))
         print("Above threshold: ", trackpos.shape)
-        print(H[trackpos[0][1]][trackpos[0][1]])
-        print(trackpos[0][0])
+        # print(H[trackpos[0][1]][trackpos[0][1]])
+        # print(trackpos[0][0])
         print(trackpos)
 
-        # clustering = AffinityPropagation().fit(trackpos)
-
-        # bandwidth = estimate_bandwidth(trackpos, quantile=0.3)
-        # clustering = MeanShift(bandwidth=bandwidth, bin_seeding=True)
-        clustering = DBSCAN(eps=np.sqrt(2), min_samples=4).fit(trackpos)
+        clustering = DBSCAN(eps=np.sqrt(2), min_samples=2).fit(trackpos)
         clustering.fit(trackpos)
         labels = clustering.labels_
+        unique_labels = set(labels)
         # clu_center = clustering.cluster_centers_
         print("labels: ", labels)
+        print("Components: ", clustering.core_sample_indices_)
+        print("unique labels: ", unique_labels)
         # print("centers: ", clu_center)
         n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
         print ("num clusters: ", n_clusters)
         print("H at centers:", [H[pos[0]][pos[1]] for pos in trackpos])
-        return trackpos
+        return trackpos, labels
 
     def getCoords(self, trackpos, x, y, bx, by):
         xp = [x[a[0]]+bx/2.0 for a in trackpos]
         yp = [y[a[1]]+by/2.0 for a in trackpos]
 
-        # xp = [x[a[0]] for a in trackpos[0]]
-        # yp = [y[a[1]] for a in trackpos[0]]
-        # xp = []
-        # yp = []
-        # xp.append(x[trackpos[0][0]]+bx/2.0)
-        # # xp.append(x[trackpos[0][0]+1])
-        # yp.append(y[trackpos[0][1]]+by/2.0)
-        # # yp.append(y[trackpos[0][1]+1])
+        # for i in range(0, len(trackpos)):
+        #     print(trackpos[i], " *** ", xp[i], " *** ", yp[i])
 
-        # xp = [1.37]
-        # yp = [-0.00026]
         return xp, yp
 
     def plotConformalTransform(self, plotName=""):
