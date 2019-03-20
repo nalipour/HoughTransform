@@ -6,7 +6,7 @@ matplotlib.get_configdir()
 plt.style.use('seaborn-poster')
 from mpl_toolkits.mplot3d import Axes3D
 
-
+FONTSIZE = 40
 # Looking into all the hits
 class Hits:
     def __init__(self, path, filename):
@@ -93,14 +93,18 @@ class Event:
         else:
             plt.show()
 
-    def drawEventXY(self):
+    def drawEventXY(self, plotName=""):
         fig_xy = plt.figure()
         plt.scatter(self._MCx, self._MCy, c = 'red', marker = '+', label="MC Truth")
         plt.legend(loc='upper left')
         plt.xlabel('x [mm]')
         plt.ylabel('y [mm]')
         plt.tight_layout()
-        plt.show()
+
+        if plotName:
+            plt.savefig(plotName)
+        else:
+            plt.show()
 
     def drawEventXZ(self):
         fig_xz = plt.figure()
