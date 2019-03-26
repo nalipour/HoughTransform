@@ -7,12 +7,13 @@ Developed for the tracking of the drift chamber of the FCCeeIDEA detector concep
 
 * Clone the repository: `git clone https://github.com/nalipour/HoughTransform.git`
 * Install python: `brew install python3`
-* Create a virtual environment *my-env*
+* Create a virtual environment *my-env*, install the required packages and run the program
 
   * `virtualenv --python python3 my-env`
   * `cd my-env`
   * `source my-venv/bin/activate`
   * `pip install -r requirements.txt `
+  * `python main.py`
 
 
 ![your_image_name](images/zoom_HT_withMax.png)
