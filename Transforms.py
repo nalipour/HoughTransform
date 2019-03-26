@@ -33,7 +33,7 @@ class Transforms:
         return r
 
     def rho_phi(self, rhit_squared, xp, yp, numpoints):
-        phis = np.linspace(0, np.pi, numpoints)
+        phis = np.linspace(0, 2*np.pi, numpoints)
         rhos = [self.rho(rhit_squared, xp, yp, phi) for phi in phis]
         return phis, rhos
 
@@ -43,17 +43,20 @@ class Transforms:
         ht_rho = []
         for i in range(0, len(self._Xp)):
             phis, rhos = self.rho_phi(self._Rsquared[i], self._Xp[i], self._Yp[i], numpoints)
+
             ht_phi.extend(phis)
             ht_rho.extend(rhos)
 
-        H, xedges, yedges = np.histogram2d(ht_phi, ht_rho, bins = (binx, biny))
+        myrange=[[0, 2*np.pi], [min(ht_rho), max(ht_rho)]]
+
+        H, xedges, yedges = np.histogram2d(ht_phi, ht_rho, bins = (binx, biny), range=myrange)
         print("xedge: ", xedges.shape)
         print("yedge: ", yedges.shape)
 
         print("min rho: ", min(ht_rho))
         print("max rho: ", max(ht_rho))
 
-        myrange=[[0, np.pi], [min(ht_rho), max(ht_rho)]]
+
         bx = (myrange[0][1]-myrange[0][0])/binx
         by = (myrange[1][1]-myrange[1][0])/biny
         trackpos, labels = self.cluster_test(H)
@@ -61,13 +64,13 @@ class Transforms:
         max_x, max_y = self.getCoords(trackpos, xedges, yedges, bx, by)
 
         fig_HT_phi = plt.figure()
-        h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet)#, range=myrange)
-        plt.scatter(max_x, max_y, s=120, facecolors='none', edgecolors='w')
-        plt.scatter(max_x, max_y, marker = 'x',
-                    c=[matplotlib.cm.nipy_spectral((float(i)+1)/len(unique_labels)) for i in labels])
+        h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
+        # plt.scatter(max_x, max_y, s=120, facecolors='none', edgecolors='w')
+        # plt.scatter(max_x, max_y, marker = 'x',
+        #             c=[matplotlib.cm.nipy_spectral((float(i)+1)/len(unique_labels)) for i in labels])
 
-        for i in range(0, len(labels)):
-            print("label: ", labels[i], "color: ", (float(labels[i])+1)/len(unique_labels), ", x: ", max_x[i], ", y: ", max_y[i])
+        # for i in range(0, len(labels)):
+        #     print("label: ", labels[i], "color: ", (float(labels[i])+1)/len(unique_labels), ", x: ", max_x[i], ", y: ", max_y[i])
 
         plt.colorbar(h[3])
         plt.xlabel(r'$\phi$ [rad]', fontsize=FONTSIZE)
