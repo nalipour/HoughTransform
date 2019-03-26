@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 matplotlib.get_configdir()
 plt.style.use('seaborn-poster')
