@@ -34,10 +34,16 @@ class Transforms:
 
     def rho_phi(self, rhit_squared, xp, yp, numpoints):
         phis = np.linspace(0, 2*np.pi, numpoints)
-        rhos = [self.rho(rhit_squared, xp, yp, phi) for phi in phis]
-        return phis, rhos
+        rhos = [] # [self.rho(rhit_squared, xp, yp, phi) for phi in phis]
+        phis_return = []
+        for phi in phis:
+            rho = self.rho(rhit_squared, xp, yp, phi)
+            if (rho>=0):
+                phis_return.append(phi)
+                rhos.append(rho)
+        return phis_return, rhos
 
-    def HoughTransform_phi(self, numpoints, binx, biny, myrange, plotName=""):
+    def HoughTransform_phi(self, numpoints, binx, biny, plotName=""):
 
         ht_phi = []
         ht_rho = []
@@ -47,7 +53,9 @@ class Transforms:
             ht_phi.extend(phis)
             ht_rho.extend(rhos)
 
+        # myrange=[[0, 2*np.pi], [min(ht_rho), 0.0008]]
         myrange=[[0, 2*np.pi], [min(ht_rho), max(ht_rho)]]
+        print("*** myrange: ", myrange)
 
         H, xedges, yedges = np.histogram2d(ht_phi, ht_rho, bins = (binx, biny), range=myrange)
         print("xedge: ", xedges.shape)
@@ -63,11 +71,13 @@ class Transforms:
         unique_labels = set(labels)
         max_x, max_y = self.getCoords(trackpos, xedges, yedges, bx, by)
 
+
         fig_HT_phi = plt.figure()
         h=plt.hist2d(ht_phi, ht_rho, bins=(binx, biny), cmap=plt.cm.jet, range=myrange)
-        # plt.scatter(max_x, max_y, s=120, facecolors='none', edgecolors='w')
-        # plt.scatter(max_x, max_y, marker = 'x',
-        #             c=[matplotlib.cm.nipy_spectral((float(i)+1)/len(unique_labels)) for i in labels])
+        plt.scatter(max_x, max_y, marker="o", alpha=0.5, facecolors='black', edgecolors='black', label="# hits > 112")
+        plt.scatter(max_x, max_y, marker = 'x',
+                    c=[matplotlib.cm.nipy_spectral((float(i)+0.5)/len(unique_labels)) for i in labels], label="Cluster")
+        plt.legend()
 
         # for i in range(0, len(labels)):
         #     print("label: ", labels[i], "color: ", (float(labels[i])+1)/len(unique_labels), ", x: ", max_x[i], ", y: ", max_y[i])
@@ -80,6 +90,7 @@ class Transforms:
             plt.savefig(plotName)
         else:
             plt.show()
+
 
         return H, xedges, yedges
 
