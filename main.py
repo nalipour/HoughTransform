@@ -26,7 +26,7 @@ else:
 
 
 if my_args.output != None:
-    plotpath = my_args.output
+    plotpath = my_args.output + "/"
 
 # DATA_PATH = "./data/pythia/"
 # filename = "reco_simu_Zdd.csv"

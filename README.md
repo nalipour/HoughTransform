@@ -22,7 +22,7 @@ First, the output hits from the FCCSW simulation needs to be written in a CSV fi
 
 The Hough transform can be run using the following command:
 
-`python main.py --input=hits.csv --output=plot`
+`python main.py --input=hits.csv --output=./plot/`
 
 
 ## The Hough transform for one particle track
