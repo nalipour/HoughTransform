@@ -10,8 +10,8 @@ from mpl_toolkits.mplot3d import Axes3D
 FONTSIZE = 40
 # Looking into all the hits
 class Hits:
-    def __init__(self, path, filename):
-        self._path = path
+    def __init__(self, filename):
+
         self._filename = filename
         self._data = self.read_csv_file()
         self._MCx = self._data["MCx"]
@@ -20,8 +20,7 @@ class Hits:
 
 
     def read_csv_file(self):
-        csv_path = os.path.join(self._path, self._filename)
-        return pd.read_csv(csv_path)
+        return pd.read_csv(self._filename)
 
 
     def returnEvent(self, event=0):
