@@ -12,7 +12,17 @@ Developed for the tracking of the drift chamber of the FCCeeIDEA detector concep
   * `virtualenv --python python3 my-env`
   * `source my-env/bin/activate`
   * `pip install -r requirements.txt `
-  * `python main.py`
+
+## Run
+
+First, the output hits from the FCCSW simulation needs to be written in a CSV file format using the command:
+
+ `python rootTree2CSV.py --input=hits.root --output = hits.csv`
+
+
+The Hough transform can be run using the following command:
+
+`python main.py --input=hits.csv --output=plot`
 
 
 ## The Hough transform for one particle track
