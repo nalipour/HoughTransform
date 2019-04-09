@@ -10,7 +10,6 @@ Developed for the tracking of the drift chamber of the FCCeeIDEA detector concep
 * Create a virtual environment *my-env*, install the required packages and run the program
 
   * `virtualenv --python python3 my-env`
-  * `cd my-env`
   * `source my-env/bin/activate`
   * `pip install -r requirements.txt `
   * `python main.py`
