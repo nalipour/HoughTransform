@@ -1,5 +1,5 @@
-import Hits
-import Transforms
+from HoughTransfrom import Hits
+from HoughTransform import Transforms
 import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
