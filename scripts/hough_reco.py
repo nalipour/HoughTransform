@@ -1,4 +1,4 @@
-from HoughTransfrom import Hits
+from HoughTransform import Hits
 from HoughTransform import Transforms
 import numpy as np
 import matplotlib
